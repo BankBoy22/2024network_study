@@ -132,38 +132,40 @@ private:
     void handleRequest(SOCKET clientSocket) 
     {
         while (true) {
-            char buffer[BUFFER_SIZE];
-            int bytesRead = recv(clientSocket, buffer, BUFFER_SIZE, 0);
-            if (bytesRead > 0) {
-                buffer[bytesRead] = '\0';
-                cout << "Received request: " << buffer << endl;
+        char buffer[BUFFER_SIZE];
+        memset(buffer, 0, sizeof(buffer));
+        int bytesRead = recv(clientSocket, buffer, BUFFER_SIZE, 0);
 
-                string request(buffer);
+        if (bytesRead > 0) {
+            buffer[bytesRead] = '\0';
+            cout << "Received request: " << buffer << endl;
 
-                size_t startPos = request.find("GET ") + 4;
-                size_t endPos = request.find(" HTTP/");
-                string path = request.substr(startPos, endPos - startPos);
+            string request(buffer);
 
-                if (routes.find(path) != routes.end()) {
-                    string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-                    response += routes[path];
-                    send(clientSocket, response.c_str(), response.length(), 0);
-                } else {
-                    const string notFoundResponse = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
-                    send(clientSocket, notFoundResponse.c_str(), notFoundResponse.length(), 0);
-                }
-            } else if (bytesRead == -1) {
-                // 클라이언트가 연결을 끊었을 때
-                cout << "Client disconnected" << endl;
-                closesocket(clientSocket);
-                break;
+            size_t startPos = request.find("GET ") + 4;
+            size_t endPos = request.find(" HTTP/");
+            string path = request.substr(startPos, endPos - startPos);
+
+            if (routes.find(path) != routes.end()) {
+                string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+                response += routes[path];
+                send(clientSocket, response.c_str(), response.length(), 0);
             } else {
-                // 오류 발생 시
-                cerr << "Error in recv" << endl;
+                const string notFoundResponse = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+                send(clientSocket, notFoundResponse.c_str(), notFoundResponse.length(), 0);
+            }
+        } else if (bytesRead == -1) {
+            int error_code;
+            int error_code_size = sizeof(error_code);
+            getsockopt(clientSocket, SOL_SOCKET, SO_ERROR, (char*)&error_code, &error_code_size);
+
+            if (error_code != WSAEWOULDBLOCK) {
+                cout << "Error in recv, code: " << error_code << endl;
                 closesocket(clientSocket);
                 break;
             }
         }
+    }
     }
 };
 
