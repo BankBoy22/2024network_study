@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Dragon Balls</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .dragon-ball {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            background-color: orange;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .dragon-ball:hover {
+            transform: scale(1.1);
+        }
+
+        p {
+            font-size: 18px;
+            color: #777;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Find the Dragon Balls</h1>
+        <div class="dragon-ball" id="dragon-ball-1"></div>
+        <div class="dragon-ball" id="dragon-ball-2"></div>
+        <div class="dragon-ball" id="dragon-ball-3"></div>
+        <div class="dragon-ball" id="dragon-ball-4"></div>
+        <div class="dragon-ball" id="dragon-ball-5"></div>
+        <div class="dragon-ball" id="dragon-ball-6"></div>
+        <div class="dragon-ball" id="dragon-ball-7"></div>
+        <p>Click on the Dragon Balls to find them!</p>
+        <button class="back-button" onclick="goBack()">Go Back</button>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        // 각 드래곤볼에 대한 클릭 이벤트 리스너 추가
+        const dragonBalls = document.querySelectorAll('.dragon-ball');
+        dragonBalls.forEach(ball => {
+            ball.addEventListener('click', () => {
+                ball.style.backgroundColor = 'green';
+            });
+        });
+    </script>
+</body>
+</html>
